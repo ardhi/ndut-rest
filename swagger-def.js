@@ -2,20 +2,17 @@ module.exports = {
   routePrefix: '/apidoc',
   swagger: {
     info: {
-      title: 'Rappopo BOS Rest',
-      description: 'Rest API Documentation for Rappopo BOS Ecosystem',
+      title: 'Ndut REST Api',
+      description: 'Rest API Documentation for Ndut Framework',
       version: '0.0.1'
     },
     externalDocs: {
-      url: 'https://rappopo.com/bos/rest',
+      url: 'https://github.com/ardhi/ndut',
       description: 'more'
     },
     schemes: ['http'],
     consumes: ['application/json'],
     produces: ['application/json'],
-    tags: [
-      { name: 'DB', description: 'DB Collection related end-points' }
-    ],
     securityDefinitions: {
       apiKey: {
         type: 'apiKey',

@@ -1,5 +1,6 @@
 const { isString } = require('lodash')
 const qs = require('qs')
+const fp = require('fastify-plugin')
 const swaggerDef = require('./swagger-def')
 
 let plugins = [
@@ -20,10 +21,13 @@ let plugins = [
 
 plugins = plugins.map(p => (isString(p) ? { name: p } : p))
 
-module.exports = async fastify => {
+module.exports = fp(async fastify => {
   const { config } = fastify
   for (const p of plugins) {
     const cfg = config.plugins[p.name]
-    await fastify.register(require(p.name), cfg || p.options)
+    if (cfg !== false) await fastify.register(require(p.name), cfg || p.options)
   }
-}
+}, {
+  fastify: '3.x',
+  name: 'ndut-rest'
+})
