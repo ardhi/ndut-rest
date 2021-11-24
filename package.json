@@ -29,10 +29,9 @@
     "fastify-formbody": "^5.2.0",
     "fastify-helmet": "^5.3.2",
     "fastify-multipart": "^5.1.0",
-    "fastify-plugin": "^3.0.0",
     "fastify-rate-limit": "^5.6.2",
     "fastify-swagger": "^4.12.6",
-    "lodash": "^4.17.21",
+    "ndut-helper": "file:../ndut-helper",
     "qs": "^6.10.1"
   }
 }

@@ -1,6 +1,5 @@
-const { isString } = require('lodash')
+const mixPlugins = require('ndut-helper/src/mix-plugins')
 const qs = require('qs')
-const fp = require('fastify-plugin')
 const swaggerDef = require('./swagger-def')
 
 let plugins = [
@@ -19,15 +18,13 @@ let plugins = [
   }
 ]
 
-plugins = plugins.map(p => (isString(p) ? { name: p } : p))
-
-module.exports = fp(async fastify => {
-  const { config } = fastify
-  for (const p of plugins) {
-    const cfg = config.plugins[p.name]
-    if (cfg !== false) await fastify.register(require(p.name), cfg || p.options)
-  }
-}, {
-  fastify: '3.x',
-  name: 'ndut-rest'
+plugins = plugins.map(p => {
+  if (typeof(p) === 'string') p = { name: p }
+  p.module = require(p.name)
+  return p
 })
+
+module.exports = async function (fastify) {
+  const { config } = fastify
+  mixPlugins(plugins, config)
+}
