@@ -1,5 +1,5 @@
 module.exports = {
-  routePrefix: '/apidoc',
+  routePrefix: '/restdoc',
   swagger: {
     info: {
       title: 'Ndut REST Api',
@@ -28,5 +28,5 @@ module.exports = {
   staticCSP: true,
   transformStaticCSP: (header) => header,
   exposeRoute: true,
-  hideUntagged: true
+  hideUntagged: false
 }
