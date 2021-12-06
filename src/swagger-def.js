@@ -28,5 +28,5 @@ module.exports = {
   staticCSP: true,
   transformStaticCSP: (header) => header,
   exposeRoute: true,
-  hideUntagged: false
+  hideUntagged: true
 }
