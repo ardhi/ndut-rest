@@ -3,7 +3,7 @@ const { _, scanForRoutes } = require('ndut-helper')
 const swaggerDef = require('./swagger-def')
 
 const plugin = async (fastify, options = {}) => {
-  const { config } = fastify
+  const { config, Boom } = fastify
   let scanDirs = [{ dir: options.restDir, options: { root: 'cwd' } }]
   scanDirs = _.concat(scanDirs, options.scan || [])
 
@@ -51,7 +51,7 @@ const plugin = async (fastify, options = {}) => {
   fastify.setNotFoundHandler({
     preHandler: fastify.rateLimit ? fastify.rateLimit () : undefined
   }, (request, reply) => {
-    throw new fastify.Boom.Boom('Resource not found', { statusCode: 404 })
+    throw new Boom.Boom('Resource not found', { statusCode: 404 })
   })
 }
 
