@@ -10,7 +10,6 @@ const plugin = async (fastify, options = {}) => {
   for (const n of config.nduts) {
     scanDirs = _.concat(scanDirs, [
       { dir: n.dir + '/ndutRest', options: { prefix: n.prefix } },
-      { dir: n.dir + '/src/ndutRest', options: { prefix: n.prefix } }
     ])
   }
 
