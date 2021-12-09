@@ -11,6 +11,7 @@ const plugin = async (fastify, options = {}) => {
 
 module.exports = async function (fastify) {
   const { config } = fastify
+  const name = 'ndut-rest'
   const ndutConfig = _.find(config.nduts, { name: 'ndut-rest' }) || {}
   ndutConfig.restDir = ndutConfig.restDir || './rest'
   ndutConfig.prefix = ndutConfig.prefix || '/rest'
@@ -31,5 +32,5 @@ module.exports = async function (fastify) {
   }
   ndutConfig.maxPageSize = 100
 
-  return { plugin, options: ndutConfig }
+  return { name, plugin, options: ndutConfig }
 }
