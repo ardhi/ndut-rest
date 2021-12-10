@@ -25,6 +25,9 @@ module.exports = async function (fastify) {
   }
   ndutConfig.resultKey = {
     success: 'success',
+    error: 'error',
+    statusCode: 'statusCode',
+    details: 'details',
     data: 'data',
     message: 'message',
     total: 'total',
