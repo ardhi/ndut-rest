@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/ardhi/ndut-rest#readme",
   "dependencies": {
-    "fastify-swagger": "^4.12.6",
-    "ndut-helper": "file:../ndut-helper"
+    "fastify-plugin": "^3.0.0",
+    "fastify-swagger": "^4.12.6"
   }
 }
