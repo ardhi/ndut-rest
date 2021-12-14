@@ -1,7 +1,7 @@
 {
   "name": "ndut-rest",
-  "version": "0.0.1",
-  "description": "Ndut Rest",
+  "version": "0.1.0",
+  "description": "Rest API for Ndut Framework",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,9 +13,12 @@
   "keywords": [
     "ndut",
     "rest",
+    "restful",
+    "crud",
     "fastify",
-    "minion",
-    "plugin"
+    "api",
+    "swagger",
+    "openapi"
   ],
   "author": "Ardhi Lukianto <ardhi@lukianto.com>",
   "license": "MIT",
