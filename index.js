@@ -1,9 +1,13 @@
 const handleMisc = require('./lib/handle-misc')
 const handleRoutes = require('./lib/handle-routes')
 const handleSwagger = require('./lib/handle-swagger')
+const fp = require('fastify-plugin')
+
+const earlyPlugin = fp(async (fastify, options = {}) => {
+  handleSwagger(fastify, options)
+})
 
 const plugin = async (fastify, options = {}) => {
-  handleSwagger(fastify, options)
   await handleRoutes(fastify, options)
   handleMisc(fastify)
 }
@@ -35,5 +39,5 @@ module.exports = async function (fastify) {
   }
   ndutConfig.maxPageSize = 100
 
-  return { name, plugin, options: ndutConfig }
+  return { name, plugin, earlyPlugin, options: ndutConfig }
 }
