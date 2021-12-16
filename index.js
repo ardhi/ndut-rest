@@ -2,14 +2,18 @@ const handleMisc = require('./lib/handle-misc')
 const handleRoutes = require('./lib/handle-routes')
 const handleSwagger = require('./lib/handle-swagger')
 
-const plugin = async (fastify, options = {}) => {
-  await handleRoutes(fastify, options)
-  handleMisc(fastify)
+const plugin = async function (fastify, options) {
+  await handleRoutes.call(fastify, options)
+  handleMisc.call(fastify)
 }
 
-module.exports = async function (fastify) {
-  const { _, fp } = fastify.ndut.helper
-  const { config } = fastify
+const earlyPlugin = async function (fastify, options) {
+  handleSwagger.call(fastify, options)
+}
+
+module.exports = async function () {
+  const { _, fp } = this.ndut.helper
+  const { config } = this
   const name = 'ndut-rest'
   const ndutConfig = _.find(config.nduts, { name: 'ndut-rest' }) || {}
   ndutConfig.restDir = ndutConfig.restDir || './rest'
@@ -34,9 +38,5 @@ module.exports = async function (fastify) {
   }
   ndutConfig.maxPageSize = 100
 
-  const earlyPlugin = fp(async (fastify, options = {}) => {
-    handleSwagger(fastify, options)
-  })
-
-  return { name, plugin, earlyPlugin, options: ndutConfig }
+  return { name, plugin, earlyPlugin: fp(earlyPlugin), options: ndutConfig }
 }
