@@ -16,7 +16,6 @@ module.exports = async function () {
   const { config } = this
   const name = 'ndut-rest'
   const ndutConfig = _.find(config.nduts, { name: 'ndut-rest' }) || {}
-  ndutConfig.restDir = ndutConfig.restDir || './rest'
   ndutConfig.prefix = ndutConfig.prefix || '/rest'
   ndutConfig.prefixDoc = ndutConfig.prefixDoc || '/documentation'
   ndutConfig.queryKey = {
