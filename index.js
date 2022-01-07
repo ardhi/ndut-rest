@@ -18,6 +18,8 @@ module.exports = async function () {
   const ndutConfig = _.find(config.nduts, { name: 'ndut-rest' }) || {}
   ndutConfig.prefix = ndutConfig.prefix || 'rest'
   ndutConfig.prefixDoc = ndutConfig.prefixDoc || 'restdoc'
+  if (ndutConfig.prefix[0] === '/') ndutConfig.prefix = ndutConfig.prefix.slice(1)
+  if (ndutConfig.prefixDoc[0] === '/') ndutConfig.prefixDoc = ndutConfig.prefixDoc.slice(1)
   ndutConfig.queryKey = {
     pageSize: 'pageSize',
     page: 'page',
