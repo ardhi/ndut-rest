@@ -4,6 +4,7 @@ module.exports = function (request, model) {
   const { _, getNdutConfig } = scope.ndut.helper
   const restConfig = getNdutConfig('ndut-rest')
   const { queryKey, maxPageSize } = restConfig
+  if (!_.isString(model)) model = model.name
   let limit = parseInt(query[queryKey.pageSize]) || maxPageSize
   if (limit > maxPageSize) limit = maxPageSize
   if (limit < 1) limit = 1
