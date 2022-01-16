@@ -1,0 +1,23 @@
+{
+  "name": "ndut-rest",
+  "prefixDoc": "restdoc",
+  "queryKey": {
+    "pageSize": "pageSize",
+    "page": "page",
+    "offset": "offset",
+    "sort": "sort",
+    "query": "q"
+  },
+  "resultKey": {
+    "success": "success",
+    "error": "error",
+    "statusCode": "statusCode",
+    "details": "details",
+    "data": "data",
+    "message": "message",
+    "total": "total",
+    "totalPage": "totalPage"
+  },
+  "maxPageSize": 100,
+  "dependency": ["ndut-route"]
+}

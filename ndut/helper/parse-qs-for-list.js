@@ -1,8 +1,8 @@
-module.exports = function (request, model) {
+module.exports = async function (request, model) {
   const query = request.query
-  const scope = request.server
-  const { _, getNdutConfig } = scope.ndut.helper
-  const restConfig = getNdutConfig('ndut-rest')
+  const { _, getNdutConfig } = this.ndut.helper
+  const restConfig = await getNdutConfig('ndut-rest')
+  const { schemas } = this.ndutDb
   const { queryKey, maxPageSize } = restConfig
   if (!_.isString(model)) model = model.name
   let limit = parseInt(query[queryKey.pageSize]) || maxPageSize
@@ -26,7 +26,7 @@ module.exports = function (request, model) {
   }
   let order = query[queryKey.sort]
   if (!order) {
-    const schema = _.find(getNdutConfig('ndut-db').schemas, { name: model }) || {}
+    const schema = _.find(schemas, { name: model }) || {}
     const keys = _.map(schema.columnns, 'name')
     const found = _.intersection(keys, ['updated_at', 'updatedAt', 'created_at', 'createdAt'])
     if (found[0]) order = `${found[0]} DESC`

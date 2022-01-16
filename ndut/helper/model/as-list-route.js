@@ -3,12 +3,12 @@ module.exports = async function (opts = {}) {
   const { alias, schema, schemaTags } = opts
   const handler = async function (request, reply) {
     const realAlias = alias ? alias : request.params.model
-    const { getSchemaByAlias } = this.ndutDb.helper
-    const schema = getSchemaByAlias(realAlias)
+    const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
+    const schema = await getSchemaByAlias(realAlias)
     if (!schema.expose.list) throw this.Boom.notFound('Resource not found')
     const { parseQsForList } = this.ndutRest.helper
-    const model = this.ndutDb.helper.getModelByAlias(realAlias)
-    const { limit, page, skip, order, where } = parseQsForList(request, model)
+    const model = await getModelByAlias(realAlias)
+    const { limit, page, skip, order, where } = await parseQsForList(request, model)
     const total = await this.ndutDb.count(model, request, where)
     const data = await this.ndutDb.find(model, request, { limit, order, skip, where })
     return {

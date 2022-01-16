@@ -1,17 +1,15 @@
-const getOpenApiProps = require('../../../lib/get-open-api-props')
-
 module.exports = async function (opts = {}) {
   const { _ } = this.ndut.helper
   const { alias, schema, schemaTags } = opts
-  const properties = getOpenApiProps.call(this, opts.alias)
+  const { asOpenApiProperties } = this.ndutDb.helper
+  const properties = await asOpenApiProperties(opts.alias)
   const handler = async function (request, reply) {
+    const { getModelByAlias, getSchemaByAlias } = this.ndutDb.helper
     const { _ } = this.ndut.helper
-    const { getSchemaByAlias, formatSchema } = this.ndutDb.helper
     const realAlias = alias ? alias : request.params.model
-    const schema = getSchemaByAlias(realAlias)
+    const schema = await getSchemaByAlias(realAlias)
     if (!schema.expose.create) throw this.Boom.notFound('Resource not found')
-    const bodyProps = formatSchema(schema)
-    const model = this.ndutDb.helper.getModelByAlias(realAlias)
+    const model = await getModelByAlias(realAlias)
     const data = await this.ndutDb.create(model, request, request.body)
     return {
       data,
@@ -22,8 +20,8 @@ module.exports = async function (opts = {}) {
     description: 'Create and persist records',
     tags: [schemaTags || 'General'],
     body: {
-      type: 'object',
-      properties
+      type: 'object'
+      // properties
     }
   }
   return { handler, schema: realSchema }
