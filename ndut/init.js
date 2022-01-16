@@ -1,15 +1,15 @@
 const swaggerDef = require('../lib/swagger-def')
 
 module.exports = async function () {
-  const { _, getNdutConfig } = this.ndut.helper
+  const { _, fp, getNdutConfig } = this.ndut.helper
   const options = await getNdutConfig('ndut-rest')
   if (options.swagger !== false) {
+    const plugin = fp(require('fastify-swagger'))
     this.log.debug('* RestDoc')
     _.set(swaggerDef, 'openapi.info.version', options.pkg.version)
     _.set(swaggerDef, 'openapi.info.description', options.pkg.description)
     const swaggerConf = options.swagger || swaggerDef
     swaggerConf.routePrefix = options.prefixDoc
-    this.register(require('fastify-swagger'), swaggerConf)
     const authConfig = await getNdutConfig('ndut-auth')
     if (_.get(authConfig, 'strategy.basic'))
       _.set(swaggerConf, 'openapi.components.securitySchemes.BasicAuth', { type: 'http', scheme: 'basic' })
@@ -20,5 +20,6 @@ module.exports = async function () {
       _.set(swaggerConf, 'openapi.components.securitySchemes.ApiKeyAuth', { type: 'apiKey', in: 'query', name: authConfig.apiKeyQueryString })
       swaggerConf.openapi.security.push({ ApiKeyAuth: [] })
     }
+    await this.register(plugin, swaggerConf)
   }
 }
