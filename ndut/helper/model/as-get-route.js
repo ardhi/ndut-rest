@@ -7,7 +7,7 @@ module.exports = async function (opts = {}) {
     const schema = await getSchemaByAlias(realAlias)
     if (!schema.expose.get) throw this.Boom.notFound('Resource not found')
     const model = await getModelByAlias(realAlias)
-    const data = await this.ndutDb.findById(model, request, request.params.id)
+    const data = await this.ndutDb.findOne(model, request, { where: { id: request.params.id } })
     if (!data) throw this.Boom.notFound('Record not found')
     return {
       data
