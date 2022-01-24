@@ -1,8 +1,7 @@
 const swaggerDef = require('../lib/swagger-def')
 
-module.exports = async function () {
+module.exports = async function (options) {
   const { _, fp, getNdutConfig } = this.ndut.helper
-  const options = await getNdutConfig('ndut-rest')
   if (options.swagger !== false) {
     const plugin = fp(require('fastify-swagger'))
     this.log.debug('* RestDoc')
