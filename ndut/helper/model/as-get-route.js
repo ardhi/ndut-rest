@@ -7,7 +7,9 @@ module.exports = async function (opts = {}) {
     const schema = await getSchemaByAlias(realAlias)
     if (!schema.expose.get) throw this.Boom.notFound('Resource not found')
     const model = await getModelByAlias(realAlias)
-    return await this.ndutApi.helper.findOne(model, { where: { id: request.params.id } })
+    const { user, site } = request
+    const params = { where: { id: request.params.id } }
+    return await this.ndutApi.helper.findOne({ model, params, filter: { user, site } })
   }
   const realSchema = _.cloneDeep(schema) || {
     description: 'Get record by its ID',

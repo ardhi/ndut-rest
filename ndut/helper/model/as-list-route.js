@@ -21,9 +21,10 @@ module.exports = async function (opts = {}) {
     const { prepList } = this.ndutApi.helper
     const model = await getModelByAlias(realAlias)
     const filter = translateFilter(request.query)
-    const { limit, page, skip, order, where } = await prepList(model, filter)
-    const total = await this.ndutApi.helper.count(model, where)
-    return await this.ndutApi.helper.find(model, { limit, order, skip, where, total, page })
+    const params = await prepList(model, filter)
+    const { user, site } = request
+    params.total = await this.ndutApi.helper.count({ model, params, filter: { user, site } })
+    return await this.ndutApi.helper.find({ model, params, filter: { user, site } })
   }
   const realSchema = _.cloneDeep(schema) || {
     description: 'Get records. Use query string to filter, sort and pagination',

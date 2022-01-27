@@ -7,7 +7,9 @@ module.exports = async function (opts = {}) {
     const schema = await getSchemaByAlias(realAlias)
     if (!schema.expose.remove) throw this.Boom.notFound('Resource not found')
     const model = await getModelByAlias(realAlias)
-    return await this.ndutApi.helper.remove(model, { id: request.params.id })
+    const { user, site } = request
+    const params = { id: request.params.id }
+    return await this.ndutApi.helper.remove({ model, params, filter: { user, site } })
   }
   const realSchema = _.cloneDeep(schema) || {
     description: 'Remove record by its ID',
