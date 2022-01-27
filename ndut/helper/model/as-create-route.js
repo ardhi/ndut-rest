@@ -10,11 +10,7 @@ module.exports = async function (opts = {}) {
     const schema = await getSchemaByAlias(realAlias)
     if (!schema.expose.create) throw this.Boom.notFound('Resource not found')
     const model = await getModelByAlias(realAlias)
-    const data = await this.ndutDb.create(model, request, request.body)
-    return {
-      data,
-      message: 'Record successfully created'
-    }
+    return await this.ndutApi.helper.create(model, {}, request.body)
   }
   const realSchema = _.cloneDeep(schema) || {
     description: 'Create and persist records',

@@ -11,14 +11,7 @@ module.exports = async function (opts = {}) {
     const { _ } = this.ndut.helper
     const id = request.params.id
     const model = await getModelByAlias(realAlias)
-    const existing = await this.ndutDb.findOne(model, request, { where: { id } })
-    if (!existing) throw this.Boom.notFound('Record not found')
-    await this.ndutDb.update(model, request, { id }, _.omit(request.body, 'id'))
-    const data = await this.ndutDb.model[model].findById(id)
-    return {
-      data,
-      message: 'Record successfully updated'
-    }
+    return await this.ndutApi.helper.update(model, { id }, _.omit(request.body, 'id'))
   }
   const realSchema = _.cloneDeep(schema) || {
     description: 'Update record by its ID',

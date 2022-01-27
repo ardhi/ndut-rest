@@ -1,6 +1,4 @@
 {
-  "name": "ndut-rest",
-  "prefixDoc": "restdoc",
   "queryKey": {
     "pageSize": "pageSize",
     "page": "page",
@@ -14,10 +12,11 @@
     "statusCode": "statusCode",
     "details": "details",
     "data": "data",
+    "oldData": "oldData",
     "message": "message",
     "total": "total",
     "totalPage": "totalPage"
   },
-  "maxPageSize": 100,
-  "dependency": ["ndut-route"]
+  "prefixDoc": "restdoc",
+  "dependency": ["ndut-api", "ndut-route"]
 }
