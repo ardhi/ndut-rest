@@ -1,7 +1,7 @@
 module.exports = async function (opts = {}) {
   const { _, getNdutConfig } = this.ndut.helper
   const { alias, schema, schemaTags } = opts
-  const config = await getNdutConfig('ndut-rest')
+  const config = getNdutConfig('ndut-rest')
   const invQueryKey = _.invert(config.queryKey)
 
   const translateFilter = item => {
@@ -22,8 +22,8 @@ module.exports = async function (opts = {}) {
     const model = await getModelByAlias(realAlias)
     const filter = translateFilter(request.query)
     const params = await prepList(model, filter)
-    const { user, site } = request
-    params.total = await this.ndutApi.helper.count({ model, params, filter: { user, site } })
+    const { user, site, rule } = request
+    params.total = await this.ndutApi.helper.count({ model, params, filter: { user, site, rule } })
     return await this.ndutApi.helper.find({ model, params, filter: { user, site } })
   }
   const realSchema = _.cloneDeep(schema) || {

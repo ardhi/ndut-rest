@@ -9,7 +9,7 @@ module.exports = async function (options) {
     _.set(swaggerDef, 'openapi.info.description', options.pkg.description)
     const swaggerConf = options.swagger || swaggerDef
     swaggerConf.routePrefix = options.prefixDoc
-    const authConfig = await getNdutConfig('ndut-auth')
+    const authConfig = getNdutConfig('ndut-auth')
     if (_.get(authConfig, 'strategy.basic'))
       _.set(swaggerConf, 'openapi.components.securitySchemes.BasicAuth', { type: 'http', scheme: 'basic' })
       swaggerConf.openapi.security.push({ BasicAuth: [] })
