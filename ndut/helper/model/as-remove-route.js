@@ -5,7 +5,7 @@ module.exports = async function (opts = {}) {
     const realAlias = alias ? alias : request.params.model
     const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
     const schema = await getSchemaByAlias(realAlias)
-    if (!schema.expose.remove) throw this.Boom.notFound('Resource not found')
+    if (!schema.expose.remove) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
     const { user, site } = request
     const params = { id: request.params.id }

@@ -17,7 +17,7 @@ module.exports = async function (opts = {}) {
     const realAlias = alias ? alias : request.params.model
     const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
     const schema = await getSchemaByAlias(realAlias)
-    if (!schema.expose.list) throw this.Boom.notFound('Resource not found')
+    if (!schema.expose.list) throw this.Boom.notFound('resourceNotFound')
     const { prepList } = this.ndutApi.helper
     const model = await getModelByAlias(realAlias)
     const filter = translateFilter(request.query)
