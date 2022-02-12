@@ -18,5 +18,5 @@
     "totalPage": "totalPage"
   },
   "prefixDoc": "restdoc",
-  "dependency": ["ndut-api", "ndut-route"]
+  "dependency": ["ndut-route"]
 }
