@@ -1,6 +1,6 @@
 module.exports = async function (opts = {}) {
   const { _, getNdutConfig } = this.ndut.helper
-  const { alias, schema, schemaTags } = opts
+  const { alias, schema, swaggerTags } = opts
   const config = getNdutConfig('ndut-rest')
   const invQueryKey = _.invert(config.queryKey)
 
@@ -26,9 +26,10 @@ module.exports = async function (opts = {}) {
     params.total = await this.ndutApi.helper.count({ model, params, filter: { user, site, rule } })
     return await this.ndutApi.helper.find({ model, params, filter: { user, site } })
   }
+  const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {
     description: 'Get records. Use query string to filter, sort and pagination',
-    tags: [schemaTags || 'General']
+    tags
   }
   return { handler, schema: realSchema }
 }

@@ -1,6 +1,6 @@
 module.exports = async function (opts = {}) {
   const { _ } = this.ndut.helper
-  const { alias, schema, schemaTags } = opts
+  const { alias, schema, swaggerTags } = opts
   const { asOpenApiProperties } = this.ndutDb.helper
   const properties = await asOpenApiProperties(opts.alias)
   const handler = async function (request, reply) {
@@ -12,9 +12,10 @@ module.exports = async function (opts = {}) {
     const { body, user, site } = request
     return await this.ndutApi.helper.create({ model, body, filter: { user, site } })
   }
+  let tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {
     description: 'Create and persist records',
-    tags: [schemaTags || 'General'],
+    tags,
     body: {
       type: 'object'
       // properties

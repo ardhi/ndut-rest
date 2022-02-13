@@ -1,6 +1,6 @@
 module.exports = async function (opts = {}) {
   const { _ } = this.ndut.helper
-  const { alias, schema, schemaTags } = opts
+  const { alias, schema, swaggerTags } = opts
   const handler = async function (request, reply) {
     const realAlias = alias ? alias : request.params.model
     const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
@@ -11,9 +11,10 @@ module.exports = async function (opts = {}) {
     const params = { id: request.params.id }
     return await this.ndutApi.helper.remove({ model, params, filter: { user, site } })
   }
+  const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {
     description: 'Remove record by its ID',
-    tags: [schemaTags || 'General'],
+    tags,
     params: {
       type: 'object',
       properties: {
