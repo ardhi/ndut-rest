@@ -23,8 +23,14 @@ module.exports = async function (opts = {}) {
     const filter = translateFilter(request.query)
     const params = await prepList(model, filter)
     const { user, site, rule } = request
-    params.total = await this.ndutApi.helper.count({ model, params, filter: { user, site, rule } })
-    return await this.ndutApi.helper.find({ model, params, filter: { user, site } })
+    if (request.query.stream) {
+      const stream = this.ndutApi.helper.stream({ model, params, filter: { user, site, rule } })
+      reply.type('text/plain').send(stream)
+      return
+    }
+    params.noCount = request.query.nocount
+    if (!params.noCount) params.total = await this.ndutApi.helper.count({ model, params, filter: { user, site, rule } })
+    return await this.ndutApi.helper.find({ model, params, filter: { user, site, rule } })
   }
   const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {
