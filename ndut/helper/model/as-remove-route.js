@@ -9,7 +9,7 @@ module.exports = async function (opts = {}) {
     const model = await getModelByAlias(realAlias)
     const { user, site } = request
     const params = { id: request.params.id }
-    return await this.ndutApi.helper.remove({ model, params, filter: { user, site } })
+    return await this.ndutApi.helper.remove({ model, params, filter: { user, site }, opts: { reqId: request.id } })
   }
   const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {
