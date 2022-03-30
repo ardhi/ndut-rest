@@ -15,7 +15,7 @@
     "oldData": "oldData",
     "message": "message",
     "total": "total",
-    "totalPage": "totalPage"
+    "totalPages": "totalPages"
   },
   "prefixDoc": "restdoc",
   "dependency": ["ndut-route"]
