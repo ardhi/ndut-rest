@@ -10,7 +10,7 @@ module.exports = async function (opts = {}) {
     if (!schema.expose.create) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
     const { body, user, site } = request
-    return await this.ndutApi.helper.create({ model, body, filter: { user, site }, opts: { reqId: request.id } })
+    return await this.ndutApi.helper.create({ model, body, filter: { user, site }, options: { reqId: request.id } })
   }
   let tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {

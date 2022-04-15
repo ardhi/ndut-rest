@@ -12,7 +12,7 @@ module.exports = async function (opts = {}) {
     const { user, site, body } = request
     delete body.id
     const params = { id: request.params.id }
-    return await this.ndutApi.helper.update({ model, params, body, filter: { user, site }, opts: { reqId: request.id } })
+    return await this.ndutApi.helper.update({ model, params, body, filter: { user, site }, options: { reqId: request.id } })
   }
   const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {
