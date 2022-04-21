@@ -1,14 +1,16 @@
 module.exports = async function (opts = {}) {
   const { _ } = this.ndut.helper
-  const { alias, schema, swaggerTags } = opts
+  const { alias, schema, swaggerTags, query } = opts
   const handler = async function (request, reply) {
     const realAlias = alias ? alias : request.params.model
     const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
-    const schema = await getSchemaByAlias(realAlias)
-    if (!schema.expose.remove) throw this.Boom.notFound('resourceNotFound')
+    const modelSchema = await getSchemaByAlias(realAlias)
+    if (!modelSchema.expose.remove) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
     const { user, site } = request
-    const params = { id: request.params.id }
+    let params = { id: request.params.id }
+    if (_.isFunction(query)) params = await query.call(this, params)
+    else params = _.merge(params, query)
     return await this.ndutApi.helper.remove({ model, params, filter: { user, site }, options: { reqId: request.id } })
   }
   const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags

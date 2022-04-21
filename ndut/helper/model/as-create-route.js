@@ -6,8 +6,8 @@ module.exports = async function (opts = {}) {
   const handler = async function (request, reply) {
     const { getModelByAlias, getSchemaByAlias } = this.ndutDb.helper
     const realAlias = alias ? alias : request.params.model
-    const schema = await getSchemaByAlias(realAlias)
-    if (!schema.expose.create) throw this.Boom.notFound('resourceNotFound')
+    const modelSchema = await getSchemaByAlias(realAlias)
+    if (!modelSchema.expose.create) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
     const { body, user, site } = request
     return await this.ndutApi.helper.create({ model, body, filter: { user, site }, options: { reqId: request.id } })

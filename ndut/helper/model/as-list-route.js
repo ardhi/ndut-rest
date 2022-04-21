@@ -1,6 +1,6 @@
 module.exports = async function (opts = {}) {
   const { _, getNdutConfig } = this.ndut.helper
-  const { alias, schema, swaggerTags } = opts
+  const { alias, schema, swaggerTags, query } = opts
   const config = getNdutConfig('ndut-rest')
   const invQueryKey = _.invert(config.queryKey)
 
@@ -17,8 +17,8 @@ module.exports = async function (opts = {}) {
     const realAlias = alias ? alias : request.params.model
     const { _ } = this.ndut.helper
     const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
-    const schema = await getSchemaByAlias(realAlias)
-    if (!schema.expose.list) throw this.Boom.notFound('resourceNotFound')
+    const modelSchema = await getSchemaByAlias(realAlias)
+    if (!modelSchema.expose.list) throw this.Boom.notFound('resourceNotFound')
     const { prepList } = this.ndutApi.helper
     const model = await getModelByAlias(realAlias)
     const filter = translateFilter(request.query)
@@ -28,6 +28,9 @@ module.exports = async function (opts = {}) {
       return { value, label: label || value }
     })
     const params = await prepList(model, filter)
+    if (_.isFunction(query)) params.where = await query.call(this, params.where)
+    else params.where = _.merge(params.where, query)
+
     const { user, site, rule } = request
     if (['json', 'jsonl'].includes(request.query.export)) {
       const trueJson = request.query.export === 'json'
