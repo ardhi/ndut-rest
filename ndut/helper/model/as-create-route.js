@@ -1,3 +1,5 @@
+const getColumns = require('../get-columns')
+
 module.exports = async function (opts = {}) {
   const { _ } = this.ndut.helper
   const { alias, schema, swaggerTags } = opts
@@ -10,7 +12,8 @@ module.exports = async function (opts = {}) {
     if (!modelSchema.expose.create) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
     const { body, user, site } = request
-    return await this.ndutApi.helper.create({ model, body, filter: { user, site }, options: { reqId: request.id } })
+    const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns) }
+    return await this.ndutApi.helper.create({ model, body, filter: { user, site }, options })
   }
   let tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {

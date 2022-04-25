@@ -1,3 +1,5 @@
+const getColumns = require('../get-columns')
+
 module.exports = async function (opts = {}) {
   const { _ } = this.ndut.helper
   const { alias, schema, swaggerTags, query } = opts
@@ -12,9 +14,10 @@ module.exports = async function (opts = {}) {
     const { user, site, body } = request
     delete body.id
     let params = { id: request.params.id }
+    const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns) }
     if (_.isFunction(query)) params = await query.call(this, params)
     else params = _.merge(params, query)
-    return await this.ndutApi.helper.update({ model, params, body, filter: { user, site }, options: { reqId: request.id } })
+    return await this.ndutApi.helper.update({ model, params, body, filter: { user, site }, options })
   }
   const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {

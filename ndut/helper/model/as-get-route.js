@@ -1,3 +1,5 @@
+const getColumns = require('../get-columns')
+
 module.exports = async function (opts = {}) {
   const { _ } = this.ndut.helper
   const { alias, schema, swaggerTags } = opts
@@ -12,7 +14,8 @@ module.exports = async function (opts = {}) {
     if (_.isFunction(query)) where = await query.call(this, where)
     else where = _.merge(where, query)
     const params = { where }
-    return await this.ndutApi.helper.findOne({ model, params, filter: { user, site } })
+    const options = { columns: getColumns.call(this, request.query.columns) }
+    return await this.ndutApi.helper.findOne({ model, params, filter: { user, site }, options })
   }
   const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {
