@@ -2,16 +2,15 @@ const getColumns = require('../get-columns')
 const translateFilter = require('../translate-filter')
 
 module.exports = async function (opts = {}) {
-  const { _, getNdutConfig } = this.ndut.helper
+  const { _ } = this.ndut.helper
   const { alias, schema, swaggerTags, query } = opts
-  const config = getNdutConfig('ndut-rest')
 
   const handler = async function (request, reply) {
     const realAlias = alias ? alias : request.params.model
     const { _ } = this.ndut.helper
     const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
     const modelSchema = await getSchemaByAlias(realAlias)
-    if (!modelSchema.expose.list) throw this.Boom.notFound('resourceNotFound')
+    if (!modelSchema.expose.find) throw this.Boom.notFound('resourceNotFound')
     const { prepList } = this.ndutApi.helper
     const model = await getModelByAlias(realAlias)
     const filter = translateFilter.call(this, request.query)
