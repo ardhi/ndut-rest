@@ -20,9 +20,9 @@ module.exports = async function (opts = {}) {
     const columns = getColumns.call(this, request.query.columns)
     const { user, site, rule } = request
     if (request.query.export && !this.ndutReport) throw this.Boom.internal('ndutReportMissing')
+    const options = { columns, request }
     if (['json', 'jsonl'].includes(request.query.export)) {
-      const trueJson = request.query.export === 'json'
-      const options = { trueJson, columns }
+      options.trueJson = request.query.export === 'json'
       const stream = await this.ndutReport.helper.exportJsonl({ model, params, filter: { user, site, rule }, options })
       reply.type(trueJson ? 'application/json' : 'text/plain').send(stream)
       return
@@ -30,7 +30,6 @@ module.exports = async function (opts = {}) {
     if (request.query.export === 'csv') {
       reply.header('Content-Type', 'text/csv')
       if (!request.query.inline) reply.header('Content-Disposition', `attachment; filename=${realAlias}.csv;`)
-      const options = { columns }
       const data = await this.ndutReport.helper.exportCsv({ model, params, filter: { user, site, rule }, options })
       reply.send(data)
       return
@@ -38,7 +37,6 @@ module.exports = async function (opts = {}) {
     if (request.query.export === 'xlsx') {
       reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       reply.header('Content-Disposition', `attachment; filename=${realAlias}.xlsx;`)
-      const options = { columns }
       const data = await this.ndutReport.helper.exportXlsx({ model, params, filter: { user, site, rule }, options })
       reply.send(data)
       return
@@ -46,7 +44,6 @@ module.exports = async function (opts = {}) {
     if (request.query.export === 'html') {
       reply.header('Content-Type', 'text/html')
       if (!request.query.inline) reply.header('Content-Disposition', `attachment; filename=${realAlias}.html;`)
-      const options = { columns }
       const data = await this.ndutReport.helper.exportHtml({ model, params, filter: { user, site, rule }, options })
       reply.send(data)
       return
@@ -54,12 +51,10 @@ module.exports = async function (opts = {}) {
     if (request.query.export === 'pdf') {
       reply.header('Content-Type', 'application/pdf')
       if (!request.query.inline) reply.header('Content-Disposition', `attachment; filename=${realAlias}.pdf;`)
-      const options = { columns }
       const data = await this.ndutReport.helper.exportPdf({ model, params, filter: { user, site, rule }, options })
       reply.send(data)
       return
     }
-    const options = { columns }
     params.noCount = request.query.nocount
     if (!params.noCount) params.total = await this.ndutApi.helper.count({ model, params, filter: { user, site, rule } })
     return await this.ndutApi.helper.find({ model, params, filter: { user, site, rule }, options })
