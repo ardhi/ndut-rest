@@ -6,14 +6,17 @@ module.exports = async function (opts = {}) {
   const { asOpenApiProperties } = this.ndutDb.helper
   const properties = await asOpenApiProperties(opts.alias)
   const handler = async function (request, reply) {
-    const realAlias = alias ? alias : request.params.model
+    const { getNdutConfig } = this.ndut.helper
     const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
+    const cfg = getNdutConfig('ndutApi')
+    const realAlias = alias ? alias : request.params.model
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.update) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
     const { user, site, body } = request
     delete body.id
-    let params = { id: request.params.id }
+    const replacer = new RegExp(cfg.slashReplacer, 'g')
+    let params = { id: request.params.id.replace(replacer, '/') }
     const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns) }
     if (_.isFunction(query)) params = await query.call(this, params)
     else params = _.merge(params, query)
