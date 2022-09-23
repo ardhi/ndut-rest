@@ -11,48 +11,50 @@ module.exports = async function (opts = {}) {
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.get) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
-    const { user, site, rule } = request
+    const filter = _.pick(request, ['user', 'site', 'rule', 'permission', 'isAdmin'])
+    filter.reqParams = request.params
+    filter.reqQuery = request.query
     const replacer = new RegExp(cfg.slashReplacer, 'g')
     let where = { id: request.params.id.replace(replacer, '/') }
     if (_.isFunction(query)) where = await query.call(this, where)
     else where = _.merge(where, query)
     const params = { where }
-    const options = { columns: getColumns.call(this, request.query.columns) }
+    const options = { columns: getColumns.call(this, request.query.columns), request }
     if (['json', 'jsonl'].includes(request.query.export)) {
       options.trueJson = request.query.export === 'json'
-      const stream = await this.ndutReport.helper.exportSingleJsonl({ model, params, filter: { user, site, rule }, options })
+      const stream = await this.ndutReport.helper.exportSingleJsonl({ model, params, filter, options })
       reply.type('application/json').send(stream)
       return
     }
     if (request.query.export === 'xlsx') {
       reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       reply.header('Content-Disposition', `attachment; filename=${realAlias}.xlsx;`)
-      const data = await this.ndutReport.helper.exportSingleXlsx({ model, params, filter: { user, site, rule }, options })
+      const data = await this.ndutReport.helper.exportSingleXlsx({ model, params, filter, options })
       reply.send(data)
       return
     }
     if (request.query.export === 'csv') {
       reply.header('Content-Type', 'text/csv')
       if (!request.query.inline) reply.header('Content-Disposition', `attachment; filename=${realAlias}.csv;`)
-      const data = await this.ndutReport.helper.exportSingleCsv({ model, params, filter: { user, site, rule }, options })
+      const data = await this.ndutReport.helper.exportSingleCsv({ model, params, filter, options })
       reply.send(data)
       return
     }
     if (request.query.export === 'html') {
       reply.header('Content-Type', 'text/html')
       if (!request.query.inline) reply.header('Content-Disposition', `attachment; filename=${realAlias}.html;`)
-      const data = await this.ndutReport.helper.exportSingleHtml({ model, params, filter: { user, site, rule }, options })
+      const data = await this.ndutReport.helper.exportSingleHtml({ model, params, filter, options })
       reply.send(data)
       return
     }
     if (request.query.export === 'pdf') {
       reply.header('Content-Type', 'application/pdf')
       if (!request.query.inline) reply.header('Content-Disposition', `attachment; filename=${realAlias}.pdf;`)
-      const data = await this.ndutReport.helper.exportSinglePdf({ model, params, filter: { user, site, rule }, options })
+      const data = await this.ndutReport.helper.exportSinglePdf({ model, params, filter, options })
       reply.send(data)
       return
     }
-    return await this.ndutApi.helper.findOne({ model, params, filter: { user, site }, options })
+    return await this.ndutApi.helper.findOne({ model, params, filter, options })
   }
   const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {

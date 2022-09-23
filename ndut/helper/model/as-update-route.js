@@ -13,14 +13,17 @@ module.exports = async function (opts = {}) {
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.update) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
-    const { user, site, body } = request
+    const filter = _.pick(request, ['user', 'site', 'rule', 'permission', 'isAdmin'])
+    const { body } = request
+    filter.reqParams = request.params
+    filter.reqQuery = request.query
     delete body.id
     const replacer = new RegExp(cfg.slashReplacer, 'g')
     let params = { id: request.params.id.replace(replacer, '/') }
-    const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns) }
+    const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns), uploadInfo: request.query.uploadInfo, request }
     if (_.isFunction(query)) params = await query.call(this, params)
     else params = _.merge(params, query)
-    return await this.ndutApi.helper.update({ model, params, body, filter: { user, site }, options })
+    return await this.ndutApi.helper.update({ model, params, body, filter, options })
   }
   const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
   const realSchema = _.cloneDeep(schema) || {
