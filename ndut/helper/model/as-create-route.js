@@ -11,9 +11,7 @@ module.exports = async function (opts = {}) {
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.create) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
-    const filter = _.pick(request, ['user', 'site', 'rule', 'permission', 'isAdmin'])
-    filter.reqParams = request.params
-    filter.reqQuery = request.query
+    const filter = this.ndutRest.helper.buildFilter(request)
     const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns), uploadInfo: request.query.uploadInfo, request }
     return await this.ndutApi.helper.create({ model, body: request.body, filter, options })
   }

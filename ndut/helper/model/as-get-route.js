@@ -11,9 +11,7 @@ module.exports = async function (opts = {}) {
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.get) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
-    const filter = _.pick(request, ['user', 'site', 'rule', 'permission', 'isAdmin'])
-    filter.reqParams = request.params
-    filter.reqQuery = request.query
+    const filter = this.ndutRest.helper.buildFilter(request)
     const replacer = new RegExp(cfg.slashReplacer, 'g')
     let where = { id: request.params.id.replace(replacer, '/') }
     if (_.isFunction(query)) where = await query.call(this, where)

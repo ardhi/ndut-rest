@@ -12,12 +12,9 @@ module.exports = async function (opts = {}) {
     const realAlias = alias ? alias : request.params.model
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.update) throw this.Boom.notFound('resourceNotFound')
+    const body = _.omit(request.body, ['id'])
     const model = await getModelByAlias(realAlias)
-    const filter = _.pick(request, ['user', 'site', 'rule', 'permission', 'isAdmin'])
-    const { body } = request
-    filter.reqParams = request.params
-    filter.reqQuery = request.query
-    delete body.id
+    const filter = this.ndutRest.helper.buildFilter(request)
     const replacer = new RegExp(cfg.slashReplacer, 'g')
     let params = { id: request.params.id.replace(replacer, '/') }
     const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns), uploadInfo: request.query.uploadInfo, request }

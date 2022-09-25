@@ -17,9 +17,7 @@ module.exports = async function (opts = {}) {
     if (_.isFunction(query)) await query.call(this, params.where, request)
     else params.where = _.merge(params.where, query)
     const columns = getColumns.call(this, request.query.columns)
-    const filter = _.pick(request, ['user', 'site', 'rule', 'permission', 'isAdmin'])
-    filter.reqParams = request.params
-    filter.reqQuery = request.query
+    const filter = this.ndutRest.helper.buildFilter(request)
     if (request.query.export && !this.ndutReport) throw this.Boom.internal('ndutReportMissing')
     const options = { columns, request }
     if (['json', 'jsonl'].includes(request.query.export)) {
