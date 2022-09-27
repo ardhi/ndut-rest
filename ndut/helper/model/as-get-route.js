@@ -13,10 +13,10 @@ module.exports = async function (opts = {}) {
     const model = await getModelByAlias(realAlias)
     const filter = this.ndutRest.helper.buildFilter(request)
     const replacer = new RegExp(cfg.slashReplacer, 'g')
-    let where = { id: request.params.id.replace(replacer, '/') }
-    if (_.isFunction(query)) where = await query.call(this, where)
-    else where = _.merge(where, query)
+    const where = { id: request.params.id.replace(replacer, '/') }
     const params = { where }
+    if (_.isFunction(query)) await query.call(this, params.where, request)
+    else params.where = _.merge(params.where, query)
     const options = { columns: getColumns.call(this, request.query.columns), request }
     if (['json', 'jsonl'].includes(request.query.export)) {
       options.trueJson = request.query.export === 'json'

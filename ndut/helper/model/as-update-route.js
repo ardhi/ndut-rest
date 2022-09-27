@@ -18,7 +18,7 @@ module.exports = async function (opts = {}) {
     const replacer = new RegExp(cfg.slashReplacer, 'g')
     let params = { id: request.params.id.replace(replacer, '/') }
     const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns), uploadInfo: request.query.uploadInfo, request }
-    if (_.isFunction(query)) params = await query.call(this, params)
+    if (_.isFunction(query)) await query.call(this, params, request)
     else params = _.merge(params, query)
     return await this.ndutApi.helper.update({ model, params, body, filter, options })
   }
