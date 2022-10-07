@@ -54,7 +54,7 @@ module.exports = async function (opts = {}) {
       reply.send(data)
       return
     }
-    params.noCount = request.query.nocount
+    params.noCount = !!(request.query.nocount || request.query.noCount)
     return await this.ndutApi.helper.find({ model, params, filter, options })
   }
   const tags = _.isString(swaggerTags) ? [swaggerTags] : swaggerTags
