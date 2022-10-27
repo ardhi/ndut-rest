@@ -11,9 +11,8 @@ module.exports = async function (opts = {}) {
     const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.find) throw this.Boom.notFound('resourceNotFound')
-    const { prepList } = this.ndutApi.helper
     const model = await getModelByAlias(realAlias)
-    const params = await prepList(model, translateFilter.call(this, request.query))
+    const params = this.ndutApi.helper.prepList(translateFilter.call(this, request.query), model)
     if (_.isFunction(query)) await query.call(this, params.where, request)
     else params.where = _.merge(params.where, query)
     const columns = getColumns.call(this, request.query.columns)

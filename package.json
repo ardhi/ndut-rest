@@ -1,6 +1,6 @@
 {
   "name": "ndut-rest",
-  "version": "0.7.10",
+  "version": "0.7.11",
   "description": "Rest API for Ndut Framework",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
