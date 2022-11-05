@@ -2,7 +2,7 @@ const getColumns = require('../get-columns')
 
 module.exports = async function (opts = {}) {
   const { _ } = this.ndut.helper
-  const { alias, schema, swaggerTags, query } = opts
+  const { alias, schema, swaggerTags, query, data } = opts
   const { asOpenApiProperties } = this.ndutDb.helper
   const properties = await asOpenApiProperties(opts.alias)
   const handler = async function (request, reply) {
@@ -12,7 +12,10 @@ module.exports = async function (opts = {}) {
     const realAlias = alias ? alias : request.params.model
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.update) throw this.Boom.notFound('resourceNotFound')
-    const body = _.omit(request.body, ['id'])
+
+    let body = _.omit(request.body, ['id'])
+    if (_.isFunction(data)) body = await query.call(this, data, request)
+    else body = _.merge(body, data)
     const model = await getModelByAlias(realAlias)
     const filter = this.ndutRest.helper.buildFilter(request)
     const replacer = new RegExp(cfg.slashReplacer, 'g')
