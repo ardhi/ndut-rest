@@ -14,8 +14,8 @@ module.exports = async function (opts = {}) {
     if (!modelSchema.expose.update) throw this.Boom.notFound('resourceNotFound')
 
     let body = _.omit(request.body, ['id'])
-    if (_.isFunction(data)) body = await query.call(this, data, request)
-    else body = _.merge(body, data)
+    if (_.isFunction(data)) body = await data.call(this, body, request)
+    else body = _.merge({}, body, data)
     const model = await getModelByAlias(realAlias)
     const filter = this.ndutRest.helper.buildFilter(request)
     const replacer = new RegExp(cfg.slashReplacer, 'g')

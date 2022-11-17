@@ -13,8 +13,8 @@ module.exports = async function (opts = {}) {
     const model = await getModelByAlias(realAlias)
     const filter = this.ndutRest.helper.buildFilter(request)
     let body = _.cloneDeep(request.body)
-    if (_.isFunction(data)) body = await query.call(this, data, request)
-    else body = _.merge(body, data)
+    if (_.isFunction(data)) body = await data.call(this, body, request)
+    else body = _.merge({}, body, data)
 
     const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns), uploadInfo: request.query.uploadInfo, request }
     return await this.ndutApi.helper.create({ model, body, filter, options })
