@@ -16,7 +16,7 @@ module.exports = async function (opts = {}) {
     if (_.isFunction(query)) await query.call(this, params.where, request)
     else params.where = _.merge(params.where, query)
     const columns = getColumns.call(this, request.query.columns)
-    const filter = this.ndutRest.helper.buildFilter(request)
+    const filter = this.ndutRoute.helper.buildFilter(request)
     if (request.query.export && !this.ndutReport) throw this.Boom.internal('ndutReportMissing')
     const options = { columns, request }
     if (['json', 'jsonl'].includes(request.query.export)) {

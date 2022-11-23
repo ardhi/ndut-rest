@@ -11,7 +11,7 @@ module.exports = async function (opts = {}) {
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.remove) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
-    const filter = this.ndutRest.helper.buildFilter(request)
+    const filter = this.ndutRoute.helper.buildFilter(request)
     const replacer = new RegExp(cfg.slashReplacer, 'g')
     let params = { id: request.params.id.replace(replacer, '/') }
     const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns), request }

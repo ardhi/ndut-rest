@@ -11,7 +11,7 @@ module.exports = async function (opts = {}) {
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.get) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
-    const filter = this.ndutRest.helper.buildFilter(request)
+    const filter = this.ndutRoute.helper.buildFilter(request)
     const replacer = new RegExp(cfg.slashReplacer, 'g')
     const where = { id: request.params.id.replace(replacer, '/') }
     const params = { where }

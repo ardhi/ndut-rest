@@ -17,7 +17,7 @@ module.exports = async function (opts = {}) {
     if (_.isFunction(data)) body = await data.call(this, body, request)
     else body = _.merge({}, body, data)
     const model = await getModelByAlias(realAlias)
-    const filter = this.ndutRest.helper.buildFilter(request)
+    const filter = this.ndutRoute.helper.buildFilter(request)
     const replacer = new RegExp(cfg.slashReplacer, 'g')
     let params = { id: request.params.id.replace(replacer, '/') }
     const options = { reqId: request.id, columns: getColumns.call(this, request.query.columns), uploadInfo: request.query.uploadInfo, request }

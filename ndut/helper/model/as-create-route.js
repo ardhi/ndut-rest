@@ -11,7 +11,7 @@ module.exports = async function (opts = {}) {
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.create) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
-    const filter = this.ndutRest.helper.buildFilter(request)
+    const filter = this.ndutRoute.helper.buildFilter(request)
     let body = _.cloneDeep(request.body)
     if (_.isFunction(data)) body = await data.call(this, body, request)
     else body = _.merge({}, body, data)
