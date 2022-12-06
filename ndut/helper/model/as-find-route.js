@@ -22,7 +22,7 @@ module.exports = async function (opts = {}) {
     if (['json', 'jsonl'].includes(request.query.export)) {
       options.trueJson = request.query.export === 'json'
       const stream = await this.ndutReport.helper.exportJsonl({ model, params, filter, options })
-      reply.type(trueJson ? 'application/json' : 'text/plain').send(stream)
+      reply.type(options.trueJson ? 'application/json' : 'text/plain').send(stream)
       return
     }
     if (request.query.export === 'csv') {
