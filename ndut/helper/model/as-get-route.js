@@ -7,7 +7,8 @@ module.exports = async function (opts = {}) {
     const { getNdutConfig } = this.ndut.helper
     const { getModelByAlias, getSchemaByAlias, query = {} } = this.ndutDb.helper
     const cfg = getNdutConfig('ndutApi')
-    const realAlias = alias ? alias : request.params.model
+    let realAlias = alias || request.params.model
+    if (_.isFunction(alias)) realAlias = await alias.call(this, request)
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.get) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)

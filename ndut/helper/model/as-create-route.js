@@ -7,8 +7,9 @@ module.exports = async function (opts = {}) {
   const properties = await asOpenApiProperties(opts.alias)
   const handler = async function (request, reply) {
     const { getModelByAlias, getSchemaByAlias } = this.ndutDb.helper
-    const realAlias = alias ? alias : request.params.model
     const modelSchema = await getSchemaByAlias(realAlias)
+    let realAlias = alias || request.params.model
+    if (_.isFunction(alias)) realAlias = await alias.call(this, request)
     if (!modelSchema.expose.create) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
     const filter = this.ndutRoute.helper.buildFilter(request)

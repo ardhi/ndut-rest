@@ -6,9 +6,9 @@ module.exports = async function (opts = {}) {
   const { alias, schema, swaggerTags, query } = opts
 
   const handler = async function (request, reply) {
-    const realAlias = alias ? alias : request.params.model
-    const { _ } = this.ndut.helper
     const { getSchemaByAlias, getModelByAlias } = this.ndutDb.helper
+    let realAlias = alias || request.params.model
+    if (_.isFunction(alias)) realAlias = await alias.call(this, request)
     const modelSchema = await getSchemaByAlias(realAlias)
     if (!modelSchema.expose.find) throw this.Boom.notFound('resourceNotFound')
     const model = await getModelByAlias(realAlias)
